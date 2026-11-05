@@ -1,5 +1,7 @@
 # pi-better-code-blocks
 
+![what pi-better-code-blocks looks like](https://raw.githubusercontent.com/Dev380/pi-better-code-blocks/main/screenshot.png)
+
 Code blocks in [Pi](https://github.com/earendil-works/pi)'s transcript are drawn as rounded,
 org-modern-style boxes, with the declared language on the top border and a `⧉ copy` label that
 copies the code when clicked.
