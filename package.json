@@ -1,6 +1,6 @@
 {
 	"name": "pi-better-code-blocks",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "Org-modern style code blocks with a click-to-copy label in Pi's transcript",
 	"type": "module",
 	"keywords": [
@@ -16,9 +16,7 @@
 		"type": "git",
 		"url": "github:Dev380/pi-better-code-blocks"
 	},
-	"pi": {
-		"extensions": ["./index.ts"]
-	},
+	"pi": { "extensions": ["./index.ts"] },
 	"scripts": {
 		"check": "tsc",
 		"test": "node --test test/*.test.ts"
