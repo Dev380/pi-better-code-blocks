@@ -37,10 +37,16 @@ wraps the `Markdown` component's private `renderToken` and `render`, and adds `h
 
 - `renderToken` replaces each `code` token with the box from `box.ts`.
 - `render` strips a zero-width OSC marker from the label and records the label's row and column,
-  so clicks map back to the right block after Pi has wrapped and padded the lines.
+  so clicks map back to the right block after Pi has wrapped and padded the lines. Each block's
+  marker carries an id that outlives the render, because Pi 1.5 reuses a block it has already
+  drawn instead of asking `renderToken` again.
 - `handleMouse` copies the block and re-renders the label for 1.5s.
+- If another extension wraps a Markdown instance's `renderToken` after this one, `adopt()` takes
+  the outer slot back, so its wrapper cannot rewrite the boxes. It still gets every other kind of
+  token, and any block too narrow to box. [`pi-tidy`](https://github.com/Andy8647/pi-tidy) is the
+  extension this exists for: its own code-block rules are what a wrapper would draw instead.
 
-Built against Pi 1.4.0. If a Pi update renames these internals, the boxes disappear and Pi keeps
+Built against Pi 1.5.0. If a Pi update renames these internals, the boxes disappear and Pi keeps
 working.
 
 If [`pi-copy-button`](https://github.com/jonaslsaa/pi-copy-button) is installed too, it decorates

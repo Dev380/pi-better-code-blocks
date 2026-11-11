@@ -6,13 +6,8 @@
  * component's internals; see `patch.ts`. If those internals change, the boxes disappear and Pi
  * keeps working.
  */
-import { AssistantMessageComponent, type ExtensionAPI } from "@earendil-works/pi-coding-agent";
-import { install, useContext, useTui } from "./patch.ts";
-
-/** Set by pi-copy-button, which patches the same internals and owns the Markdown instances it decorates. */
-const COPY_BUTTON = Symbol.for("pi-copy-button.updateContent");
-
-const conflict = () => COPY_BUTTON in AssistantMessageComponent.prototype;
+import { type ExtensionAPI } from "@earendil-works/pi-coding-agent";
+import { copyButtonInstalled, install, useContext, useTui } from "./patch.ts";
 
 export default function (pi: ExtensionAPI) {
 	install();
@@ -20,7 +15,7 @@ export default function (pi: ExtensionAPI) {
 	pi.on("session_start", async (_event, context) => {
 		useContext(context);
 		if (!context.hasUI) return;
-		if (!warned && conflict()) {
+		if (!warned && copyButtonInstalled()) {
 			warned = true;
 			context.ui.notify(
 				"pi-copy-button is also installed and overrides this extension's copy labels. Remove it to use pi-better-code-blocks.",

@@ -1,6 +1,6 @@
 {
 	"name": "pi-better-code-blocks",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"description": "Org-modern style code blocks with a click-to-copy label in Pi's transcript",
 	"type": "module",
 	"keywords": [
@@ -22,8 +22,8 @@
 		"test": "node --test test/*.test.ts"
 	},
 	"devDependencies": {
-		"@earendil-works/pi-coding-agent": "1.4.0",
-		"@earendil-works/pi-tui": "1.4.0",
+		"@earendil-works/pi-coding-agent": "1.5.0",
+		"@earendil-works/pi-tui": "1.5.0",
 		"@types/node": "^24.0.0",
 		"typescript": "^5.9.0"
 	},
