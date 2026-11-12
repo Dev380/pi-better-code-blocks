@@ -7,6 +7,7 @@
  * keeps working.
  */
 import { type ExtensionAPI } from "@earendil-works/pi-coding-agent";
+import { attachAndRefresh } from "./better-render.ts";
 import { copyButtonInstalled, install, useContext, useTui } from "./patch.ts";
 
 export default function (pi: ExtensionAPI) {
@@ -27,7 +28,11 @@ export default function (pi: ExtensionAPI) {
 			useTui(t);
 			return { render: () => [], invalidate: () => {} };
 		});
+		attachAndRefresh();
 	});
+	// pi-better-render installs its own patch on session_start. If this extension loaded first, that
+	// patch did not exist yet: pick it up before the next run rather than losing the boxes.
+	pi.on("before_agent_start", () => attachAndRefresh());
 	pi.on("session_shutdown", async () => {
 		useTui(undefined);
 		useContext(undefined);

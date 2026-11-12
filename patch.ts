@@ -19,15 +19,11 @@ import {
 	type Tokens,
 	type TuiMouseEvent,
 	type TuiMouseEventResult,
-	visibleWidth,
 } from "@earendil-works/pi-tui";
-import { type Hit, marker, renderCodeBox, stripMarkers } from "./box.ts";
+import { type Hit, copyLabel, LABEL_WIDTH, marker, renderCodeBox, stripMarkers } from "./box.ts";
 
-const LABEL = "⧉ copy";
-const DONE = "✓ copied";
-const LABEL_WIDTH = Math.max(visibleWidth(LABEL), visibleWidth(DONE));
-const COPIED_MS = 1500;
-const dim = (text: string) => `\x1b[2m${text}\x1b[22m`;
+/** How long a label keeps saying `✓ copied`. */
+export const COPIED_MS = 1500;
 
 type Block = { code: string; lang?: string };
 type Copied = { block: number };
@@ -59,7 +55,24 @@ export const copyButtonInstalled = (): boolean => COPY_BUTTON in AssistantMessag
 let tui: TUI | undefined;
 let ctx: ExtensionContext | undefined;
 
-const fullscreen = (): boolean => tui === undefined || tui instanceof TuiAltScreen;
+/** Whether a box may carry a clickable label: only the fullscreen TUI delivers clicks to components. */
+export const fullscreen = (): boolean => tui === undefined || tui instanceof TuiAltScreen;
+
+/** Asks the TUI for a frame, for a component that changed its own output. */
+export function requestRender(): void {
+	tui?.requestRender();
+}
+
+/** Invalidates the whole tree, so every component redraws after the renderer changed under it. */
+export function refresh(): void {
+	tui?.invalidate?.();
+	tui?.requestRender();
+}
+
+/** Reports a failed clipboard write in Pi's notification area. */
+export function notifyCopyError(error: unknown): void {
+	ctx?.ui.notify(`Copy failed: ${error instanceof Error ? error.message : String(error)}`, "error");
+}
 
 export function useTui(next: TUI | undefined): void {
 	tui = next;
@@ -116,7 +129,7 @@ export function install(options: InstallOptions = {}): void {
 			lang: code.lang,
 			width,
 			theme: md.theme,
-			label: full ? labelFor(state.copied?.block === id) : undefined,
+			label: full ? copyLabel(state.copied?.block === id) : undefined,
 			labelWidth: LABEL_WIDTH,
 			marker: full ? marker(id) : undefined,
 		});
@@ -188,16 +201,15 @@ export function install(options: InstallOptions = {}): void {
 			() => {
 				state.copied = done;
 				this.invalidate();
-				tui?.requestRender();
+				requestRender();
 				setTimeout(() => {
 					if (state.copied !== done) return;
 					state.copied = undefined;
 					this.invalidate();
-					tui?.requestRender();
+					requestRender();
 				}, resetMs);
 			},
-			(error: unknown) =>
-				ctx?.ui.notify(`Copy failed: ${error instanceof Error ? error.message : String(error)}`, "error"),
+			notifyCopyError,
 		);
 		return { handled: true };
 	};
@@ -206,12 +218,4 @@ export function install(options: InstallOptions = {}): void {
 function stateOf(md: MarkdownInternals): State {
 	const self = md as unknown as { [STATE]?: State };
 	return (self[STATE] ??= { blocks: new Map() });
-}
-
-/** Centers the label in a fixed-width slot, so the top border does not move while copying. */
-function labelFor(copied: boolean): string {
-	const text = copied ? DONE : LABEL;
-	const pad = Math.max(0, LABEL_WIDTH - visibleWidth(text));
-	const left = Math.floor(pad / 2);
-	return dim(" ".repeat(left) + text + " ".repeat(pad - left));
 }

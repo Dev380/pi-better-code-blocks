@@ -20,6 +20,21 @@ import {
 /** Below this a box cannot hold a readable code line; Pi's own rendering is left alone. */
 export const MIN_BOX_WIDTH = 12;
 
+/** The label a box's top border carries, and what it says once the code is on the clipboard. */
+const LABEL = "⧉ copy";
+const DONE = "✓ copied";
+
+/** The label slot's width: the widest state, so the top border does not move while copying. */
+export const LABEL_WIDTH = Math.max(visibleWidth(LABEL), visibleWidth(DONE));
+
+/** The clickable label, dim and centered in a fixed-width slot. */
+export function copyLabel(copied: boolean): string {
+	const text = copied ? DONE : LABEL;
+	const pad = Math.max(0, LABEL_WIDTH - visibleWidth(text));
+	const left = Math.floor(pad / 2);
+	return `\x1b[2m${" ".repeat(left)}${text}${" ".repeat(pad - left)}\x1b[22m`;
+}
+
 /** Keep at least this many dashes between the language and the copy label. */
 const MIN_DASHES = 2;
 const ELLIPSIS = "…";
@@ -135,7 +150,7 @@ function codeLines(options: CodeBoxOptions): string[] {
 }
 
 /** The fence's info string, minus control characters and anything after the first word. */
-function languageName(raw: string | undefined): string {
+export function languageName(raw: string | undefined): string {
 	if (!raw) return "";
 	const clean = stripTerminalSequences(raw)
 		.replaceAll(/[\u0000-\u001f\u007f]/g, "")

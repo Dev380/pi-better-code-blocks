@@ -1,37 +1,48 @@
 {
-	"name": "pi-better-code-blocks",
-	"version": "0.1.2",
-	"description": "Org-modern style code blocks with a click-to-copy label in Pi's transcript",
-	"type": "module",
-	"keywords": [
-		"pi-package",
-		"pi-extension",
-		"code-block",
-		"copy",
-		"clipboard",
-		"markdown",
-		"tui"
-	],
-	"repository": {
-		"type": "git",
-		"url": "github:Dev380/pi-better-code-blocks"
-	},
-	"pi": { "extensions": ["./index.ts"] },
-	"scripts": {
-		"check": "tsc",
-		"test": "node --test test/*.test.ts"
-	},
-	"devDependencies": {
-		"@earendil-works/pi-coding-agent": "1.5.0",
-		"@earendil-works/pi-tui": "1.5.0",
-		"@types/node": "^24.0.0",
-		"typescript": "^5.9.0"
-	},
-	"peerDependencies": {
-		"@earendil-works/pi-coding-agent": "*",
-		"@earendil-works/pi-tui": "*"
-	},
-	"author": "Dev380",
-	"license": "MIT",
-	"files": ["index.ts", "box.ts", "patch.ts", "README.md", "LICENSE"]
+  "name": "pi-better-code-blocks",
+  "version": "0.1.2",
+  "description": "Org-modern style code blocks with a click-to-copy label in Pi's transcript",
+  "type": "module",
+  "keywords": [
+    "pi-package",
+    "pi-extension",
+    "code-block",
+    "copy",
+    "clipboard",
+    "markdown",
+    "tui"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "github:Dev380/pi-better-code-blocks"
+  },
+  "pi": {
+    "extensions": [
+      "./index.ts"
+    ]
+  },
+  "scripts": {
+    "check": "tsc",
+    "test": "node --test test/*.test.ts"
+  },
+  "devDependencies": {
+    "@earendil-works/pi-coding-agent": "1.5.0",
+    "@earendil-works/pi-tui": "1.5.0",
+    "@types/node": "^24.0.0",
+    "typescript": "^5.9.0"
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "*",
+    "@earendil-works/pi-tui": "*"
+  },
+  "author": "Dev380",
+  "license": "MIT",
+  "files": [
+    "index.ts",
+    "box.ts",
+    "patch.ts",
+    "better-render.ts",
+    "README.md",
+    "LICENSE"
+  ]
 }

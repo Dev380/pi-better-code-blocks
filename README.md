@@ -49,6 +49,22 @@ wraps the `Markdown` component's private `renderToken` and `render`, and adds `h
 Built against Pi 1.5.0. If a Pi update renames these internals, the boxes disappear and Pi keeps
 working.
 
+## pi-better-render
+
+[`pi-better-render`](https://github.com/JeffeyChou/pi-better-render) draws assistant replies with
+its own `RichMarkdown` component instead of Pi's `Markdown`, so `patch.ts` never sees those blocks.
+`better-render.ts` hooks the factory that builds them and draws the boxes there instead:
+
+- each complete fence is swapped for a one-line sentinel before the rich renderer lexes the text,
+  and the box is drawn on the sentinel's row, so its layout (and its cache) still works;
+- everything else — math, tables, mermaid diagrams, its own copy buttons — is rendered by it,
+  untouched. Clicks outside a box are handed back with the row numbers it expects;
+- a fence they draw as a diagram (`mermaid`), one that is still streaming, one indented inside a
+  list item and one too narrow to box all stay theirs.
+
+`/better-render off` returns assistant replies to Pi's own renderer, and the boxes come back
+through `patch.ts`. Thinking blocks, user messages and tool output always go through `patch.ts`.
+
 If [`pi-copy-button`](https://github.com/jonaslsaa/pi-copy-button) is installed too, it decorates
 the same Markdown instances and takes over their mouse handling, so its labels win and the
 `⧉ copy` label here stops responding. The extension warns about this at startup; remove
@@ -62,4 +78,5 @@ npm run check
 npm test
 ```
 
-`box.ts` is pure and testable; `patch.ts` owns the Pi integration.
+`box.ts` is pure and testable; `patch.ts` owns the Pi integration, and `better-render.ts` the
+pi-better-render one.
